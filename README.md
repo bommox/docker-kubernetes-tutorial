@@ -165,12 +165,12 @@ docker rm -f webapp
 docker run -d --name webapp -v www-volume:/usr/local/apache2/htdocs/ -p 8888:80 httpd:2.4
 ```
 
+*NOTA: al usar un volume, si este estaba vacío o no existía, se le copian los datos del contenedor. En un bind mount no ocurre así*
+
 Podemos levantar otra aplicación que también haga uso del mismo voluen
 ```
 docker run -d -v www-volume:/srv -p 8889:80 hacdias/filebrowser
 ```
-
-
 
 
 
