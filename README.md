@@ -94,4 +94,57 @@ Lo volvemos a levantar:
 docker start some-mariadb
 ```
 
-Si vamos a ver los datos de nuestra tabla, veremos que sigue existiendo.
+Si vamos a ver los datos de nuestra tabla, veremos que sigue existiendo. Pero, ¿por qué?.
+
+Es cierto que los contenedores Docker no tienen persistencia, por lo que vamos a analizar el Dockerfile de la base de datos.
+https://github.com/docker-library/mariadb/blob/0ab4688d0e6d3a81d7cd19e04db44fb499c49d6a/10.3/Dockerfile
+
+Ahí veremos que hay definido un VOLUME a la carpeta ```/var/lib/mysql``` que es donde se almacenan los datos en una base de datos.
+
+Docker nos puede mostrar los volúmenes de la siguiente forma:
+```
+docker volume ls
+```
+Y con ```docker volume inspect <vol-name>``` podemos ver la ruta física que usa para ello.
+
+Podemos hacer un ls de esa ruta dentro y fuera del contenedor para ver que el contenido es el mismo.
+
+En este caso, el volumen venía definido en el dockerfile, por lo que se ha creado automáticamente al hacer el "docker run".
+
+### Volumen manual con aplicación web
+
+Levantamos un contenedor apache:
+```
+docker run -d -it --name webapp -p 8888:80 httpd:2.4
+```
+
+Ahora si vamos a la url por el puerto 8888 veremos el texto **It works!** que hay por defecto en el contenedor.
+
+Vamos a modificar el contenido del index.html:
+```
+$ docker exec -ti webapp bash
+# (webapp) echo "<h1>Mola</h1>" > htdocs/index.html
+# exit
+```
+
+Al refrescar en el navegador, veremos el cambio.
+
+Pero ahora probamos a recrear el contenedor
+```
+docker rm -f webapp
+docker run -d --name webapp -p 8888:80 httpd:2.4
+```
+
+Vemos que ahora no existen los datos, ha vuelto al origen.
+
+```
+docker rm -f webapp
+docker run -d --name webapp -v ${PWD}/www:/usr/local/apache2/htdocs/ -p 8888:80 httpd:2.4
+```
+Ahora si volvemos a repetir el proceso, sí se guardará la información.
+
+
+
+
+
+
