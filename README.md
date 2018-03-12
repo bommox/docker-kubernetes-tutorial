@@ -67,20 +67,16 @@ Podríamos crear tablas y utilizarlas, pero mejor aún, vamos a desplegar un php
 Imagen: https://hub.docker.com/r/phpmyadmin/phpmyadmin/
 
 ```
-docker run --name myadmin -d --link some-mariadb:3306 -p 8080:80 phpmyadmin/phpmyadmin
+docker run --name myadmin -d --link some-mariadb -p 8080:80 -e PMA_HOST=some-mariadb  phpmyadmin/phpmyadmin
 ```
 
 Con este ```run``` estamos indicando lo siguiente:
 
 - --name myadmin: nombre del contenedor
 - -d: modo detached
-- --link some-mariadb:3306: con esto indicamos que este contenedor puede acceder al contenedor some-mariadb por el puerto 3306, que debe estar expuesto.
+- --link some-mariadb con esto indicamos que este contenedor puede acceder al contenedor some-mariadb por el puerto 3306, que debe estar expuesto.
+- -e PMA_HOST=some-mariadb : Establece la variable de entorno PMA_HOST que debe apuntar al contenedor de la base de datos.
 - -p 8080:80: vinculamos el puerto 8080 de nuestro host anfitrión al puerto 80 del contenedor. Al tratarse de una aplicación web, debemos poder acceder por el navegador.
 
 
-```
-docker run --name myadmin -d --link some-mariadb:db -p 8080:80 phpmyadmin/phpmyadmin
-```
-
-Con esto sí que va.
 
