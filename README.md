@@ -9,6 +9,8 @@ Para llevar a cabo estos ejemplos se emplea Docker. Por tanto se requiere una de
 
 ## Ejercicio 1 - Link & Volumes
 
+### Contenedor DDBB MariaDB
+
 Creamos una instancia de **mariadb**, con lo que tendríamos una base de datos:
 
 ```
@@ -38,12 +40,17 @@ El argumento del --port en docker run lo que hace es vincular un puerto del anfi
 Podemos acceder a la base de datos para crear una tabla y un registro.
 
 ```sh
-$ docker exec some-mariadb mysql -u root -pmy-secret-pw
+$ docker exec -ti some-mariadb mysql -u root -pmy-secret-pw
 
 ... Entraremos a la consola mysql
 ```
-
 *NOTA: Podemos usar el nombre del contenedor o bien el inicio del id. *
+
+Sobre los flags del exec:
+
+- -ti: habilita el modo terminal interactivo
+- some-mariadb: es el nombre del contenedor.
+- mysql -u root -pmysecret-pw : es el comando a ejecutar en el contenedor
 
 Escribimos algunos comandos SQL:
 ```SQL
@@ -51,7 +58,29 @@ Escribimos algunos comandos SQL:
 // Muestra las BBDD, saldrán las 3 por defecto
 ```
 
+Salimos con ```Ctrl+d``` o escribiendo ```EXIT```
+
 Podríamos crear tablas y utilizarlas, pero mejor aún, vamos a desplegar un phpmyadmin para gestionar esta base de datos.
 
+### Contenedor Aplicación phpmyadmin
 
+Imagen: https://hub.docker.com/r/phpmyadmin/phpmyadmin/
+
+```
+docker run --name myadmin -d --link some-mariadb:3306 -p 8080:80 phpmyadmin/phpmyadmin
+```
+
+Con este ```run``` estamos indicando lo siguiente:
+
+- --name myadmin: nombre del contenedor
+- -d: modo detached
+- --link some-mariadb:3306: con esto indicamos que este contenedor puede acceder al contenedor some-mariadb por el puerto 3306, que debe estar expuesto.
+- -p 8080:80: vinculamos el puerto 8080 de nuestro host anfitrión al puerto 80 del contenedor. Al tratarse de una aplicación web, debemos poder acceder por el navegador.
+
+
+```
+docker run --name myadmin -d --link some-mariadb:db -p 8080:80 phpmyadmin/phpmyadmin
+```
+
+Con esto sí que va.
 
