@@ -72,16 +72,33 @@ Podríamos crear tablas y utilizarlas, pero mejor aún, vamos a desplegar un php
 Imagen: https://hub.docker.com/r/phpmyadmin/phpmyadmin/
 
 ```
-docker run --name myadmin -d --link some-mariadb -p 8080:80 -e PMA_HOST=some-mariadb  phpmyadmin/phpmyadmin
+docker run --name myadmin -d -p 8080:80 phpmyadmin/phpmyadmin
+```
+Con esto hemos levantado un phpmyadmin en el puerto 8080 de nuestro host anfitrión. Pero veremos que no podemos acceder pues no conecta con la base de datos.
+
+Para ello debemos crear una red y conectar ambos contenedores:
+
+```
+docker network create tuto-net
+docker network connect tuto-net some-mariadb
+docker network connect tuto-net myadmin
+```
+
+Ahora los contenedores pueden verse. Por ejemplo:
+
+```
+docker exec -ti myadmin ping some-mariadb
+```
+
+Pero seguimos sin poder entrar. Hemos de añadir variables de entorno al contenedor de PhpMyAdmin.
+```
+docker rm -f myadmin
+docker run --name myadmin -d --network tuto-net -p 8080:80 -e PMA_HOST=some-mariadb  phpmyadmin/phpmyadmin
 ```
 
 Con este ```run``` estamos indicando lo siguiente:
-
-- --name myadmin: nombre del contenedor
-- -d: modo detached
-- --link some-mariadb con esto indicamos que este contenedor puede acceder al contenedor some-mariadb por el puerto 3306, que debe estar expuesto.
+- --network tuto-net: añade el contenedor a la red
 - -e PMA_HOST=some-mariadb : Establece la variable de entorno PMA_HOST que debe apuntar al contenedor de la base de datos.
-- -p 8080:80: vinculamos el puerto 8080 de nuestro host anfitrión al puerto 80 del contenedor. Al tratarse de una aplicación web, debemos poder acceder por el navegador.
 
 ### Persistencia
 
