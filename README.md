@@ -9,6 +9,11 @@ Para llevar a cabo estos ejemplos se emplea Docker. Por tanto se requiere una de
 
 ## Ejercicio 1 - Link & Volumes
 
+### Objetivos
+
+- Link entre contenedores
+- Persistencia en volúmenes: bind-mount vs volume
+
 ### Contenedor DDBB MariaDB
 
 Creamos una instancia de **mariadb**, con lo que tendríamos una base de datos:
