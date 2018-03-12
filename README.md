@@ -172,6 +172,3 @@ Podemos levantar otra aplicación que también haga uso del mismo voluen
 docker run -d -v www-volume:/srv -p 8889:80 hacdias/filebrowser
 ```
 
-
-
-
