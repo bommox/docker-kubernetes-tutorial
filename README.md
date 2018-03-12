@@ -161,7 +161,7 @@ docker run -d --name webapp -p 8888:80 httpd:2.4
 
 Vemos que ahora no existen los datos, ha vuelto al origen.
 
-### Volume mount
+### Bind mount
 
 ```
 docker rm -f webapp
