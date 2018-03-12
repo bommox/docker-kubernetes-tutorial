@@ -80,6 +80,8 @@ Con este ```run``` estamos indicando lo siguiente:
 
 ### Persistencia
 
+![docker persistence](https://docs.docker.com/storage/images/types-of-mounts.png)
+
 Probemos a crear una tabla en la base de datos del contenedor **some-mariadb** en un namespace cualquiera. E insertamos unos datos en esa tabla.
 
 Ahora realizemos las siguientes pruebas:
@@ -137,11 +139,36 @@ docker run -d --name webapp -p 8888:80 httpd:2.4
 
 Vemos que ahora no existen los datos, ha vuelto al origen.
 
+### Volume mount
+
 ```
 docker rm -f webapp
 docker run -d --name webapp -v ${PWD}/www:/usr/local/apache2/htdocs/ -p 8888:80 httpd:2.4
 ```
 Ahora si volvemos a repetir el proceso, sí se guardará la información.
+
+
+### Volume
+
+La forma aconsejada por Docker es crear un Volume, y utilizarlo entre aplicaciones. No depender de las rutas del host anfitrión.
+
+Para crear un volumen cualquiera:
+```
+docker volume create www-volume
+```
+
+Y luego se utilizar con el flag ```-v``` de la misma forma que antes
+
+Y lo podríamos reutilizar entre diferentes aplicaciones:
+```
+docker rm -f webapp
+docker run -d --name webapp -v www-volume:/usr/local/apache2/htdocs/ -p 8888:80 httpd:2.4
+```
+
+Podemos levantar otra aplicación que también haga uso del mismo voluen
+```
+docker run -d -v www-volume:/srv -p 8889:80 hacdias/filebrowser
+```
 
 
 
