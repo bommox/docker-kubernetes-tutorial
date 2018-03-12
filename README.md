@@ -78,5 +78,20 @@ Con este ```run``` estamos indicando lo siguiente:
 - -e PMA_HOST=some-mariadb : Establece la variable de entorno PMA_HOST que debe apuntar al contenedor de la base de datos.
 - -p 8080:80: vinculamos el puerto 8080 de nuestro host anfitrión al puerto 80 del contenedor. Al tratarse de una aplicación web, debemos poder acceder por el navegador.
 
+### Persistencia
 
+Probemos a crear una tabla en la base de datos del contenedor **some-mariadb** en un namespace cualquiera. E insertamos unos datos en esa tabla.
 
+Ahora realizemos las siguientes pruebas:
+```
+docker stop some-mariadb
+```
+
+Con esto paramos el contenedor, veremos que phpmyadmin ya no puede conectar.
+
+Lo volvemos a levantar:
+```
+docker start some-mariadb
+```
+
+Si vamos a ver los datos de nuestra tabla, veremos que sigue existiendo.
